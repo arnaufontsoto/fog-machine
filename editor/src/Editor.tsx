@@ -193,7 +193,19 @@ function Editor(props: Props): JSX.Element {
     const newCount = usageCount + 1;
     setUsageCount(newCount);
     localStorage.setItem("mapbox-usage-count", newCount.toString());
-    mapController.setMapStyle(styleKey as any);
+    mapController.setMapStyle(
+      styleKey as
+        | "standard"
+        | "satellite"
+        | "hybrid"
+        | "none"
+        | "light"
+        | "dark"
+        | "outdoors"
+        | "navigation-day"
+        | "navigation-night"
+        | "standard-satellite"
+    );
     setShowStyleSelector(false);
   };
 

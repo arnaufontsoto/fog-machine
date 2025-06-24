@@ -140,7 +140,15 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
   const { t } = useTranslation();
   const [showStatistics, setShowStatistics] = useState(false);
   const [autoSave, setAutoSave] = useState(false);
-  const [statistics, setStatistics] = useState<any>(null);
+  const [statistics, setStatistics] = useState<{
+    totalTiles: number;
+    totalBlocks: number;
+    totalVisitedPixels: number;
+    coverageArea: number;
+    bounds: { north: number; south: number; east: number; west: number } | null;
+    regions: string[];
+    lastModified: Date | null;
+  } | null>(null);
 
   // Obtener estadísticas del mapa
   useEffect(() => {
@@ -172,7 +180,19 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
           <select
             value={props.mapController.getMapStyle()}
             onChange={(e) =>
-              props.mapController.setMapStyle(e.target.value as any)
+              props.mapController.setMapStyle(
+                e.target.value as
+                  | "standard"
+                  | "satellite"
+                  | "hybrid"
+                  | "none"
+                  | "light"
+                  | "dark"
+                  | "outdoors"
+                  | "navigation-day"
+                  | "navigation-night"
+                  | "standard-satellite"
+              )
             }
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
           >
