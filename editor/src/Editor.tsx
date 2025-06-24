@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 import Mousetrap from "mousetrap";
 import MainMenu from "./MainMenu";
 import { useTranslation } from "react-i18next";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon } from "@heroicons/react/outline";
 
 type Props = {
   setLoaded(isLoaded: boolean): void;
@@ -211,7 +211,7 @@ function Editor(props: Props): JSX.Element {
             toolButton !== null ? (
               <button
                 key={toolButton.key}
-                title={t(`tool-${toolButton.key}`)}
+                title={t(`tool-${toolButton.key}`) as string}
                 className={
                   "flex items-center justify-center mx-1 my-1 w-12 h-12 p-2 bg-white shadow-md rounded-lg hover:bg-gray-200 active:bg-gray-400 transition-all duration-200" +
                   (toolButton.enabled
@@ -270,7 +270,7 @@ function Editor(props: Props): JSX.Element {
           <button
             onClick={() => setShowStyleSelector(!showStyleSelector)}
             className="bg-white/90 backdrop-blur-sm hover:bg-white/95 text-gray-700 p-3 rounded-lg shadow-lg border border-gray-200/50 transition-all duration-200 hover:shadow-xl group"
-            title={t("map-style")}
+            title={t("map-style") as string}
           >
             <div className="flex items-center space-x-2">
               <span className="text-lg">🗺️</span>
