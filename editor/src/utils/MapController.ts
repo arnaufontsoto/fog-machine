@@ -6,7 +6,7 @@ import { MapDraw } from "./MapDraw";
 import { MapRenderer, MAPBOX_MAIN_CANVAS_LAYER } from "./MapRenderer";
 import { Bbox } from "./CommonTypes";
 
-type MapStyle = "standard" | "satellite" | "hybrid" | "none";
+type MapStyle = "standard" | "satellite" | "hybrid" | "none" | "light" | "dark" | "outdoors" | "navigation-day" | "navigation-night" | "standard-satellite";
 type MapProjection = "globe" | "mercator";
 type FogConcentration = "low" | "medium" | "high";
 
@@ -77,12 +77,29 @@ export class MapController {
   }
 
   mapboxStyleURL(): string {
-    if (this.mapStyle == "standard" || this.mapStyle == "none") {
-      return "mapbox://styles/mapbox/streets-v11";
-    } else if (this.mapStyle == "satellite") {
-      return "mapbox://styles/mapbox/satellite-v9";
-    } else {
-      return "mapbox://styles/mapbox/satellite-streets-v11";
+    switch (this.mapStyle) {
+      case "standard":
+        return "mapbox://styles/mapbox/standard";
+      case "satellite":
+        return "mapbox://styles/mapbox/satellite-v9";
+      case "hybrid":
+        return "mapbox://styles/mapbox/satellite-streets-v12";
+      case "light":
+        return "mapbox://styles/mapbox/light-v11";
+      case "dark":
+        return "mapbox://styles/mapbox/dark-v11";
+      case "outdoors":
+        return "mapbox://styles/mapbox/outdoors-v12";
+      case "navigation-day":
+        return "mapbox://styles/mapbox/navigation-day-v1";
+      case "navigation-night":
+        return "mapbox://styles/mapbox/navigation-night-v1";
+      case "standard-satellite":
+        return "mapbox://styles/mapbox/standard-satellite";
+      case "none":
+        return "mapbox://styles/mapbox/streets-v12";
+      default:
+        return "mapbox://styles/mapbox/streets-v12";
     }
   }
 

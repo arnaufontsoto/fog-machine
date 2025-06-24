@@ -90,6 +90,77 @@ export class FogMap {
     return [xg, yg];
   }
 
+  // Nuevo método para calcular estadísticas
+  getStatistics(): {
+    totalTiles: number;
+    totalBlocks: number;
+    totalVisitedPixels: number;
+    coverageArea: number; // en km²
+    bounds: { north: number; south: number; east: number; west: number } | null;
+    regions: string[];
+    lastModified: Date | null;
+  } {
+    const tiles = Object.values(this.tiles);
+    
+    if (tiles.length === 0) {
+      return {
+        totalTiles: 0,
+        totalBlocks: 0,
+        totalVisitedPixels: 0,
+        coverageArea: 0,
+        bounds: null,
+        regions: [],
+        lastModified: null
+      };
+    }
+
+    let totalBlocks = 0;
+    let totalVisitedPixels = 0;
+    let minX = Infinity, maxX = -Infinity;
+    let minY = Infinity, maxY = -Infinity;
+    const regions = new Set<string>();
+
+    tiles.forEach(tile => {
+      const tileBlocks = Object.values(tile.blocks);
+      totalBlocks += tileBlocks.length;
+      
+      tileBlocks.forEach(block => {
+        totalVisitedPixels += block.count();
+        regions.add(block.region());
+      });
+
+      // Calcular bounds
+      const bounds = tile.bounds();
+      minX = Math.min(minX, bounds[0][0]);
+      minY = Math.min(minY, bounds[0][1]);
+      maxX = Math.max(maxX, bounds[1][0]);
+      maxY = Math.max(maxY, bounds[1][1]);
+    });
+
+    // Calcular área de cobertura aproximada
+    const latDiff = maxY - minY;
+    const lngDiff = maxX - minX;
+    const avgLat = (minY + maxY) / 2;
+    const kmPerDegreeLat = 111.32;
+    const kmPerDegreeLng = 111.32 * Math.cos(avgLat * Math.PI / 180);
+    const coverageArea = (latDiff * kmPerDegreeLat) * (lngDiff * kmPerDegreeLng);
+
+    return {
+      totalTiles: tiles.length,
+      totalBlocks,
+      totalVisitedPixels,
+      coverageArea: Math.round(coverageArea * 100) / 100,
+      bounds: {
+        north: maxY,
+        south: minY,
+        east: maxX,
+        west: minX
+      },
+      regions: Array.from(regions).sort(),
+      lastModified: new Date() // Simplificado para este ejemplo
+    };
+  }
+
   addLine(
     startLng: number,
     startLat: number,

@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import Mousetrap from "mousetrap";
 import MainMenu from "./MainMenu";
 import { useTranslation } from "react-i18next";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 
 type Props = {
   setLoaded(isLoaded: boolean): void;
@@ -136,6 +137,20 @@ function Editor(props: Props): JSX.Element {
     },
   ];
 
+  // Añadir estado para el selector de estilos
+  const [showStyleSelector, setShowStyleSelector] = useState(false);
+
+  const mapStyles = [
+    { key: "standard", name: "Standard 3D", preview: "🌍" },
+    { key: "satellite", name: "Satellite", preview: "🛰️" },
+    { key: "hybrid", name: "Satellite Streets", preview: "🗺️" },
+    { key: "light", name: "Light", preview: "☀️" },
+    { key: "dark", name: "Dark", preview: "🌙" },
+    { key: "outdoors", name: "Outdoors", preview: "🏔️" },
+    { key: "navigation-day", name: "Navigation Day", preview: "🧭" },
+    { key: "navigation-night", name: "Navigation Night", preview: "🌌" },
+  ];
+
   return (
     <>
       <MainMenu
@@ -180,6 +195,58 @@ function Editor(props: Props): JSX.Element {
             {t(`tool-${Object.keys(ControlMode)[controlMode].toLowerCase()}`)} {t("active")}
           </div>
         )}
+      </div>
+
+      {/* Selector rápido de estilos de mapa */}
+      <div className="absolute top-4 right-20 z-20">
+        <div className="relative">
+          <button
+            onClick={() => setShowStyleSelector(!showStyleSelector)}
+            className="bg-white/90 backdrop-blur-sm hover:bg-white/95 text-gray-700 p-3 rounded-lg shadow-lg border border-gray-200/50 transition-all duration-200 hover:shadow-xl group"
+            title={t("map-style")}
+          >
+            <div className="flex items-center space-x-2">
+              <span className="text-lg">🗺️</span>
+              <span className="text-sm font-medium hidden md:block">
+                {mapStyles.find(s => s.key === mapController.getMapStyle())?.name || "Map"}
+              </span>
+              <ChevronDownIcon className={`w-4 h-4 transition-transform duration-200 ${showStyleSelector ? 'rotate-180' : ''}`} />
+            </div>
+          </button>
+          
+          {showStyleSelector && (
+            <div className="absolute top-full right-0 mt-2 w-64 bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-gray-200/50 overflow-hidden z-30">
+              <div className="p-2">
+                <div className="text-xs font-semibold text-gray-500 uppercase tracking-wide px-2 py-1 mb-2">
+                  {t("map-style")}
+                </div>
+                <div className="grid grid-cols-2 gap-1">
+                  {mapStyles.map((style) => (
+                    <button
+                      key={style.key}
+                      onClick={() => {
+                        mapController.setMapStyle(style.key as any);
+                        setShowStyleSelector(false);
+                      }}
+                      className={`p-3 rounded-lg text-left transition-all duration-200 hover:bg-blue-50 border ${
+                        mapController.getMapStyle() === style.key
+                          ? 'bg-blue-100 border-blue-300 text-blue-700'
+                          : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-blue-200'
+                      }`}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <span className="text-lg">{style.preview}</span>
+                        <div>
+                          <div className="text-xs font-medium">{style.name}</div>
+                        </div>
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          )}
+        </div>
       </div>
     </>
   );

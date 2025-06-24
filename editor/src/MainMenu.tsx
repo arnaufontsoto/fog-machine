@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Popover, Tab, Transition } from "@headlessui/react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/solid";
 import { Fragment } from "react";
@@ -140,6 +140,20 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
   const { t } = useTranslation();
   const [showStatistics, setShowStatistics] = useState(false);
   const [autoSave, setAutoSave] = useState(false);
+  const [statistics, setStatistics] = useState<any>(null);
+
+  // Obtener estadísticas del mapa
+  useEffect(() => {
+    const updateStats = () => {
+      const stats = props.mapController.fogMap.getStatistics();
+      setStatistics(stats);
+    };
+    
+    updateStats();
+    const interval = setInterval(updateStats, 5000); // Actualizar cada 5 segundos
+    
+    return () => clearInterval(interval);
+  }, [props.mapController]);
 
   return (
     <>
@@ -150,51 +164,112 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
           </span>
         </span>
         
+        {/* Selector de Estilo de Mapa */}
+        <div className="mt-4">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
+            {t("map-style")}
+          </label>
+          <select
+            value={props.mapController.getMapStyle()}
+            onChange={(e) => props.mapController.setMapStyle(e.target.value as any)}
+            className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
+          >
+            <option value="standard">{t("map-style-standard")}</option>
+            <option value="satellite">{t("map-style-satellite")}</option>
+            <option value="hybrid">{t("map-style-hybrid")}</option>
+            <option value="light">{t("map-style-light")}</option>
+            <option value="dark">{t("map-style-dark")}</option>
+            <option value="outdoors">{t("map-style-outdoors")}</option>
+            <option value="navigation-day">{t("map-style-navigation-day")}</option>
+            <option value="navigation-night">{t("map-style-navigation-night")}</option>
+            <option value="standard-satellite">{t("map-style-standard-satellite")}</option>
+            <option value="none">{t("map-style-none")}</option>
+          </select>
+        </div>
+
         {/* Estadísticas */}
         <div className="mt-4 flex items-center justify-between">
           <span className="text-sm text-gray-600">{t("show-statistics")}</span>
           <button
             onClick={() => setShowStatistics(!showStatistics)}
-            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
               showStatistics ? 'bg-blue-600' : 'bg-gray-200'
             }`}
           >
             <span
-              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+              className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition duration-200 ease-in-out ${
                 showStatistics ? 'translate-x-5' : 'translate-x-0'
               }`}
             />
           </button>
         </div>
 
-        {/* Auto-guardado */}
+        {showStatistics && statistics && (
+          <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200">
+            <h3 className="text-sm font-medium text-gray-900 mb-3">{t("statistics")}</h3>
+            
+            <div className="grid grid-cols-2 gap-3 text-sm">
+              <div className="flex justify-between">
+                <span className="text-gray-600">{t("total-tiles")}:</span>
+                <span className="font-medium">{statistics.totalTiles.toLocaleString()}</span>
+              </div>
+              
+              <div className="flex justify-between">
+                <span className="text-gray-600">{t("total-blocks")}:</span>
+                <span className="font-medium">{statistics.totalBlocks.toLocaleString()}</span>
+              </div>
+              
+              <div className="flex justify-between">
+                <span className="text-gray-600">{t("visited-pixels")}:</span>
+                <span className="font-medium">{statistics.totalVisitedPixels.toLocaleString()}</span>
+              </div>
+              
+              <div className="flex justify-between">
+                <span className="text-gray-600">{t("coverage-area")}:</span>
+                <span className="font-medium">{statistics.coverageArea} km²</span>
+              </div>
+            </div>
+
+            {statistics.bounds && (
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <div className="text-xs text-gray-500 mb-2">{t("map-bounds")}:</div>
+                <div className="grid grid-cols-2 gap-2 text-xs">
+                  <div>N: {statistics.bounds.north.toFixed(4)}°</div>
+                  <div>S: {statistics.bounds.south.toFixed(4)}°</div>
+                  <div>E: {statistics.bounds.east.toFixed(4)}°</div>
+                  <div>W: {statistics.bounds.west.toFixed(4)}°</div>
+                </div>
+              </div>
+            )}
+
+            {statistics.regions.length > 0 && (
+              <div className="mt-3 pt-3 border-t border-gray-100">
+                <div className="text-xs text-gray-500 mb-2">{t("regions-visited")}:</div>
+                <div className="text-xs text-gray-700">
+                  {statistics.regions.slice(0, 3).join(', ')}
+                  {statistics.regions.length > 3 && ` (+${statistics.regions.length - 3} más)`}
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Auto Save */}
         <div className="mt-4 flex items-center justify-between">
           <span className="text-sm text-gray-600">{t("auto-save")}</span>
           <button
             onClick={() => setAutoSave(!autoSave)}
-            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
               autoSave ? 'bg-blue-600' : 'bg-gray-200'
             }`}
           >
             <span
-              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+              className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition duration-200 ease-in-out ${
                 autoSave ? 'translate-x-5' : 'translate-x-0'
               }`}
             />
           </button>
         </div>
-
-        {/* Mostrar estadísticas si está habilitado */}
-        {showStatistics && (
-          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
-            <h4 className="text-sm font-medium text-blue-900 mb-2">{t("statistics")}</h4>
-            <div className="text-xs text-blue-700 space-y-1">
-              <div>{t("total-tiles")}: {props.mapController.fogMap.tiles.size}</div>
-              <div>{t("coverage-area")}: ~{Math.round(props.mapController.fogMap.tiles.size * 0.1)} km²</div>
-              <div>{t("last-edit")}: {new Date().toLocaleDateString()}</div>
-            </div>
-          </div>
-        )}
       </div>
     </>
   );
