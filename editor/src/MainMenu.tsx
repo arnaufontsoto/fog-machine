@@ -136,6 +136,70 @@ function MapTap(props: { mapController: MapController }): JSX.Element {
   );
 }
 
+function AdvancedTab(props: { mapController: MapController }): JSX.Element {
+  const { t } = useTranslation();
+  const [showStatistics, setShowStatistics] = useState(false);
+  const [autoSave, setAutoSave] = useState(false);
+
+  return (
+    <>
+      <div className="p-4 bg-gray-50">
+        <span className="flex items-center">
+          <span className="text-sm font-medium text-gray-900">
+            {t("advanced-settings")}
+          </span>
+        </span>
+        
+        {/* Estadísticas */}
+        <div className="mt-4 flex items-center justify-between">
+          <span className="text-sm text-gray-600">{t("show-statistics")}</span>
+          <button
+            onClick={() => setShowStatistics(!showStatistics)}
+            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+              showStatistics ? 'bg-blue-600' : 'bg-gray-200'
+            }`}
+          >
+            <span
+              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                showStatistics ? 'translate-x-5' : 'translate-x-0'
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Auto-guardado */}
+        <div className="mt-4 flex items-center justify-between">
+          <span className="text-sm text-gray-600">{t("auto-save")}</span>
+          <button
+            onClick={() => setAutoSave(!autoSave)}
+            className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none ${
+              autoSave ? 'bg-blue-600' : 'bg-gray-200'
+            }`}
+          >
+            <span
+              className={`pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out ${
+                autoSave ? 'translate-x-5' : 'translate-x-0'
+              }`}
+            />
+          </button>
+        </div>
+
+        {/* Mostrar estadísticas si está habilitado */}
+        {showStatistics && (
+          <div className="mt-4 p-3 bg-blue-50 rounded-lg">
+            <h4 className="text-sm font-medium text-blue-900 mb-2">{t("statistics")}</h4>
+            <div className="text-xs text-blue-700 space-y-1">
+              <div>{t("total-tiles")}: {props.mapController.fogMap.tiles.size}</div>
+              <div>{t("coverage-area")}: ~{Math.round(props.mapController.fogMap.tiles.size * 0.1)} km²</div>
+              <div>{t("last-edit")}: {new Date().toLocaleDateString()}</div>
+            </div>
+          </div>
+        )}
+      </div>
+    </>
+  );
+}
+
 type Props = {
   mapController: MapController;
   msgboxShow(title: string, msg: string): void;
@@ -323,6 +387,8 @@ export default function MainMenu(props: Props): JSX.Element {
                         </span>
                         {languageTab}
                       </div>
+
+                      <AdvancedTab mapController={mapController} />
                     </div>
                   </Popover.Panel>
                 </Transition>

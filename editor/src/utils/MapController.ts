@@ -14,6 +14,8 @@ export enum ControlMode {
   View,
   Eraser,
   DrawLine,
+  DrawBrush,
+  Select,
 }
 
 export class MapController {

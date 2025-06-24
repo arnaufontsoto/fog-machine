@@ -2,6 +2,7 @@ import { ControlMode, MapController } from "./utils/MapController";
 import { useEffect, useState } from "react";
 import Mousetrap from "mousetrap";
 import MainMenu from "./MainMenu";
+import { useTranslation } from "react-i18next";
 
 type Props = {
   setLoaded(isLoaded: boolean): void;
@@ -12,6 +13,8 @@ type Props = {
 function Editor(props: Props): JSX.Element {
   const mapController = props.mapController;
   const [controlMode, setControlMode] = useState(ControlMode.View);
+  const { t } = useTranslation();
+
   useEffect(() => {
     mapController.setControlMode(controlMode);
   }, [controlMode]);
@@ -40,6 +43,23 @@ function Editor(props: Props): JSX.Element {
   });
   Mousetrap.bind(["mod+shift+z"], (_) => {
     mapController.redo();
+  });
+  
+  // Nuevos atajos de teclado
+  Mousetrap.bind(["e"], (_) => {
+    setControlMode(controlMode === ControlMode.Eraser ? ControlMode.View : ControlMode.Eraser);
+  });
+  Mousetrap.bind(["l"], (_) => {
+    setControlMode(controlMode === ControlMode.DrawLine ? ControlMode.View : ControlMode.DrawLine);
+  });
+  Mousetrap.bind(["b"], (_) => {
+    setControlMode(controlMode === ControlMode.DrawBrush ? ControlMode.View : ControlMode.DrawBrush);
+  });
+  Mousetrap.bind(["s"], (_) => {
+    setControlMode(controlMode === ControlMode.Select ? ControlMode.View : ControlMode.Select);
+  });
+  Mousetrap.bind(["escape"], (_) => {
+    setControlMode(ControlMode.View);
   });
 
   const toolButtons = [
@@ -88,6 +108,32 @@ function Editor(props: Props): JSX.Element {
         }
       },
     },
+    {
+      key: "brush",
+      icon: iconBrush,
+      clickable: true,
+      enabled: controlMode === ControlMode.DrawBrush,
+      onClick: () => {
+        if (controlMode === ControlMode.DrawBrush) {
+          setControlMode(ControlMode.View);
+        } else {
+          setControlMode(ControlMode.DrawBrush);
+        }
+      },
+    },
+    {
+      key: "select",
+      icon: iconSelect,
+      clickable: true,
+      enabled: controlMode === ControlMode.Select,
+      onClick: () => {
+        if (controlMode === ControlMode.Select) {
+          setControlMode(ControlMode.View);
+        } else {
+          setControlMode(ControlMode.Select);
+        }
+      },
+    },
   ];
 
   return (
@@ -99,33 +145,40 @@ function Editor(props: Props): JSX.Element {
       />
 
       <div className="absolute bottom-0 pb-4 z-10 pointer-events-none flex justify-center w-full">
-        {toolButtons.map((toolButton) =>
-          toolButton !== null ? (
-            <button
-              key={toolButton.key}
-              className={
-                "flex items-center justify-center mx-2 w-9 h-9 p-2 bg-white shadow rounded-lg hover:bg-gray-200 active:bg-gray-400" +
-                (toolButton.enabled ? " ring-4 ring-gray-700" : "") +
-                (toolButton.clickable
-                  ? " pointer-events-auto"
-                  : " text-gray-300 opacity-40")
-              }
-              onClick={() => {
-                if (toolButton.clickable) {
-                  toolButton.onClick();
+        <div className="flex flex-wrap justify-center max-w-md bg-white/90 backdrop-blur-sm rounded-xl p-2 shadow-lg">
+          {toolButtons.map((toolButton) =>
+            toolButton !== null ? (
+              <button
+                key={toolButton.key}
+                title={t(`tool-${toolButton.key}`)}
+                className={
+                  "flex items-center justify-center mx-1 my-1 w-12 h-12 p-2 bg-white shadow-md rounded-lg hover:bg-gray-200 active:bg-gray-400 transition-all duration-200" +
+                  (toolButton.enabled ? " ring-2 ring-blue-500 bg-blue-50" : "") +
+                  (toolButton.clickable
+                    ? " pointer-events-auto transform hover:scale-105"
+                    : " text-gray-300 opacity-40")
                 }
-              }}
-            >
-              {toolButton.icon}
-            </button>
-          ) : (
-            <div
-              key="|"
-              className={
-                "flex items-center justify-center rounded mx-7 w-1 h-9 bg-black shadow"
-              }
-            ></div>
-          )
+                onClick={() => {
+                  if (toolButton.clickable) {
+                    toolButton.onClick();
+                  }
+                }}
+              >
+                {toolButton.icon}
+              </button>
+            ) : (
+              <div
+                key="|"
+                className="flex items-center justify-center rounded mx-2 w-1 h-12 bg-gray-300 shadow-sm"
+              />
+            )
+          )}
+        </div>
+        
+        {controlMode !== ControlMode.View && (
+          <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">
+            {t(`tool-${Object.keys(ControlMode)[controlMode].toLowerCase()}`)} {t("active")}
+          </div>
         )}
       </div>
     </>
@@ -203,6 +256,32 @@ const iconLine = (
     <path
       fill="currentColor"
       d="M362.7 19.3L314.3 67.7 444.3 197.7l48.4-48.4c25-25 25-65.5 0-90.5L453.3 19.3c-25-25-65.5-25-90.5 0zm-71 71L58.6 323.5c-10.4 10.4-18 23.3-22.2 37.4L1 481.2C-1.5 489.7 .8 498.8 7 505s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L421.7 220.3 291.7 90.3z"
+    />
+  </svg>
+);
+
+const iconBrush = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 512 512"
+    className="w-full h-full"
+  >
+    <path
+      fill="currentColor"
+      d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z"
+    />
+  </svg>
+);
+
+const iconSelect = (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    viewBox="0 0 512 512"
+    className="w-full h-full"
+  >
+    <path
+      fill="currentColor"
+      d="M0 358.2V480c0 17.7 14.3 32 32 32h121.8c8.5 0 16.6-3.4 22.6-9.4L346.9 332.1c12.5-12.5 12.5-32.8 0-45.3l-121.8-121.8c-12.5-12.5-32.8-12.5-45.3 0L9.4 335.5C3.4 341.6 0 349.7 0 358.2z"
     />
   </svg>
 );
