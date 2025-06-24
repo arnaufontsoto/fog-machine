@@ -6,7 +6,17 @@ import { MapDraw } from "./MapDraw";
 import { MapRenderer, MAPBOX_MAIN_CANVAS_LAYER } from "./MapRenderer";
 import { Bbox } from "./CommonTypes";
 
-type MapStyle = "standard" | "satellite" | "hybrid" | "none" | "light" | "dark" | "outdoors" | "navigation-day" | "navigation-night" | "standard-satellite";
+type MapStyle =
+  | "standard"
+  | "satellite"
+  | "hybrid"
+  | "none"
+  | "light"
+  | "dark"
+  | "outdoors"
+  | "navigation-day"
+  | "navigation-night"
+  | "standard-satellite";
 type MapProjection = "globe" | "mercator";
 type FogConcentration = "low" | "medium" | "high";
 

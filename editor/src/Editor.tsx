@@ -45,19 +45,31 @@ function Editor(props: Props): JSX.Element {
   Mousetrap.bind(["mod+shift+z"], (_) => {
     mapController.redo();
   });
-  
+
   // Nuevos atajos de teclado
   Mousetrap.bind(["e"], (_) => {
-    setControlMode(controlMode === ControlMode.Eraser ? ControlMode.View : ControlMode.Eraser);
+    setControlMode(
+      controlMode === ControlMode.Eraser ? ControlMode.View : ControlMode.Eraser
+    );
   });
   Mousetrap.bind(["l"], (_) => {
-    setControlMode(controlMode === ControlMode.DrawLine ? ControlMode.View : ControlMode.DrawLine);
+    setControlMode(
+      controlMode === ControlMode.DrawLine
+        ? ControlMode.View
+        : ControlMode.DrawLine
+    );
   });
   Mousetrap.bind(["b"], (_) => {
-    setControlMode(controlMode === ControlMode.DrawBrush ? ControlMode.View : ControlMode.DrawBrush);
+    setControlMode(
+      controlMode === ControlMode.DrawBrush
+        ? ControlMode.View
+        : ControlMode.DrawBrush
+    );
   });
   Mousetrap.bind(["s"], (_) => {
-    setControlMode(controlMode === ControlMode.Select ? ControlMode.View : ControlMode.Select);
+    setControlMode(
+      controlMode === ControlMode.Select ? ControlMode.View : ControlMode.Select
+    );
   });
   Mousetrap.bind(["escape"], (_) => {
     setControlMode(ControlMode.View);
@@ -153,7 +165,7 @@ function Editor(props: Props): JSX.Element {
 
   // Añadir después del estado showStyleSelector
   const [usageCount, setUsageCount] = useState(() => {
-    const saved = localStorage.getItem('mapbox-usage-count');
+    const saved = localStorage.getItem("mapbox-usage-count");
     return saved ? parseInt(saved) : 0;
   });
 
@@ -162,25 +174,25 @@ function Editor(props: Props): JSX.Element {
     // Incrementar contador al inicializar
     const newCount = usageCount + 1;
     setUsageCount(newCount);
-    localStorage.setItem('mapbox-usage-count', newCount.toString());
-    
+    localStorage.setItem("mapbox-usage-count", newCount.toString());
+
     // Reset contador cada mes
-    const lastReset = localStorage.getItem('usage-reset-date');
+    const lastReset = localStorage.getItem("usage-reset-date");
     const now = new Date();
     const thisMonth = `${now.getFullYear()}-${now.getMonth()}`;
-    
+
     if (lastReset !== thisMonth) {
       setUsageCount(1);
-      localStorage.setItem('mapbox-usage-count', '1');
-      localStorage.setItem('usage-reset-date', thisMonth);
+      localStorage.setItem("mapbox-usage-count", "1");
+      localStorage.setItem("usage-reset-date", thisMonth);
     }
   }, []);
 
-    // Función para trackear cambios de estilo
+  // Función para trackear cambios de estilo
   const handleStyleChange = (styleKey: string) => {
     const newCount = usageCount + 1;
     setUsageCount(newCount);
-    localStorage.setItem('mapbox-usage-count', newCount.toString());
+    localStorage.setItem("mapbox-usage-count", newCount.toString());
     mapController.setMapStyle(styleKey as any);
     setShowStyleSelector(false);
   };
@@ -202,7 +214,9 @@ function Editor(props: Props): JSX.Element {
                 title={t(`tool-${toolButton.key}`)}
                 className={
                   "flex items-center justify-center mx-1 my-1 w-12 h-12 p-2 bg-white shadow-md rounded-lg hover:bg-gray-200 active:bg-gray-400 transition-all duration-200" +
-                  (toolButton.enabled ? " ring-2 ring-blue-500 bg-blue-50" : "") +
+                  (toolButton.enabled
+                    ? " ring-2 ring-blue-500 bg-blue-50"
+                    : "") +
                   (toolButton.clickable
                     ? " pointer-events-auto transform hover:scale-105"
                     : " text-gray-300 opacity-40")
@@ -223,10 +237,11 @@ function Editor(props: Props): JSX.Element {
             )
           )}
         </div>
-        
+
         {controlMode !== ControlMode.View && (
           <div className="absolute bottom-20 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium shadow-lg">
-            {t(`tool-${Object.keys(ControlMode)[controlMode].toLowerCase()}`)} {t("active")}
+            {t(`tool-${Object.keys(ControlMode)[controlMode].toLowerCase()}`)}{" "}
+            {t("active")}
           </div>
         )}
       </div>
@@ -238,11 +253,10 @@ function Editor(props: Props): JSX.Element {
             <div className="flex items-center">
               <span className="text-lg mr-2">⚠️</span>
               <div>
-                <div className="font-medium">
-                  {t("usage-warning")}
-                </div>
+                <div className="font-medium">{t("usage-warning")}</div>
                 <div className="text-sm">
-                  {usageCount.toLocaleString()}/50,000 {t("map-loads")} - {t("consider-reducing-usage")}
+                  {usageCount.toLocaleString()}/50,000 {t("map-loads")} -{" "}
+                  {t("consider-reducing-usage")}
                 </div>
               </div>
             </div>
@@ -261,12 +275,17 @@ function Editor(props: Props): JSX.Element {
             <div className="flex items-center space-x-2">
               <span className="text-lg">🗺️</span>
               <span className="text-sm font-medium hidden md:block">
-                {mapStyles.find(s => s.key === mapController.getMapStyle())?.name || "Map"}
+                {mapStyles.find((s) => s.key === mapController.getMapStyle())
+                  ?.name || "Map"}
               </span>
-              <ChevronDownIcon className={`w-4 h-4 transition-transform duration-200 ${showStyleSelector ? 'rotate-180' : ''}`} />
+              <ChevronDownIcon
+                className={`w-4 h-4 transition-transform duration-200 ${
+                  showStyleSelector ? "rotate-180" : ""
+                }`}
+              />
             </div>
           </button>
-          
+
           {showStyleSelector && (
             <div className="absolute top-full right-0 mt-2 w-64 bg-white/95 backdrop-blur-sm rounded-lg shadow-xl border border-gray-200/50 overflow-hidden z-30">
               <div className="p-2">
@@ -277,17 +296,19 @@ function Editor(props: Props): JSX.Element {
                   {mapStyles.map((style) => (
                     <button
                       key={style.key}
-                                             onClick={() => handleStyleChange(style.key)}
+                      onClick={() => handleStyleChange(style.key)}
                       className={`p-3 rounded-lg text-left transition-all duration-200 hover:bg-blue-50 border ${
                         mapController.getMapStyle() === style.key
-                          ? 'bg-blue-100 border-blue-300 text-blue-700'
-                          : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-blue-200'
+                          ? "bg-blue-100 border-blue-300 text-blue-700"
+                          : "bg-gray-50 border-gray-200 text-gray-700 hover:border-blue-200"
                       }`}
                     >
                       <div className="flex items-center space-x-2">
                         <span className="text-lg">{style.preview}</span>
                         <div>
-                          <div className="text-xs font-medium">{style.name}</div>
+                          <div className="text-xs font-medium">
+                            {style.name}
+                          </div>
                         </div>
                       </div>
                     </button>

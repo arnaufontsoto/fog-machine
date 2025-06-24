@@ -101,7 +101,7 @@ export class FogMap {
     lastModified: Date | null;
   } {
     const tiles = Object.values(this.tiles);
-    
+
     if (tiles.length === 0) {
       return {
         totalTiles: 0,
@@ -110,21 +110,23 @@ export class FogMap {
         coverageArea: 0,
         bounds: null,
         regions: [],
-        lastModified: null
+        lastModified: null,
       };
     }
 
     let totalBlocks = 0;
     let totalVisitedPixels = 0;
-    let minX = Infinity, maxX = -Infinity;
-    let minY = Infinity, maxY = -Infinity;
+    let minX = Infinity,
+      maxX = -Infinity;
+    let minY = Infinity,
+      maxY = -Infinity;
     const regions = new Set<string>();
 
-    tiles.forEach(tile => {
+    tiles.forEach((tile) => {
       const tileBlocks = Object.values(tile.blocks);
       totalBlocks += tileBlocks.length;
-      
-      tileBlocks.forEach(block => {
+
+      tileBlocks.forEach((block) => {
         totalVisitedPixels += block.count();
         regions.add(block.region());
       });
@@ -142,8 +144,8 @@ export class FogMap {
     const lngDiff = maxX - minX;
     const avgLat = (minY + maxY) / 2;
     const kmPerDegreeLat = 111.32;
-    const kmPerDegreeLng = 111.32 * Math.cos(avgLat * Math.PI / 180);
-    const coverageArea = (latDiff * kmPerDegreeLat) * (lngDiff * kmPerDegreeLng);
+    const kmPerDegreeLng = 111.32 * Math.cos((avgLat * Math.PI) / 180);
+    const coverageArea = latDiff * kmPerDegreeLat * (lngDiff * kmPerDegreeLng);
 
     return {
       totalTiles: tiles.length,
@@ -154,10 +156,10 @@ export class FogMap {
         north: maxY,
         south: minY,
         east: maxX,
-        west: minX
+        west: minX,
       },
       regions: Array.from(regions).sort(),
-      lastModified: new Date() // Simplificado para este ejemplo
+      lastModified: new Date(), // Simplificado para este ejemplo
     };
   }
 

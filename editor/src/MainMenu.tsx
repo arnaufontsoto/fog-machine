@@ -148,10 +148,10 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
       const stats = props.mapController.fogMap.getStatistics();
       setStatistics(stats);
     };
-    
+
     updateStats();
     const interval = setInterval(updateStats, 5000); // Actualizar cada 5 segundos
-    
+
     return () => clearInterval(interval);
   }, [props.mapController]);
 
@@ -163,7 +163,7 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
             {t("advanced-settings")}
           </span>
         </span>
-        
+
         {/* Selector de Estilo de Mapa */}
         <div className="mt-4">
           <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -171,7 +171,9 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
           </label>
           <select
             value={props.mapController.getMapStyle()}
-            onChange={(e) => props.mapController.setMapStyle(e.target.value as any)}
+            onChange={(e) =>
+              props.mapController.setMapStyle(e.target.value as any)
+            }
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
           >
             <option value="standard">{t("map-style-standard")}</option>
@@ -180,9 +182,15 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
             <option value="light">{t("map-style-light")}</option>
             <option value="dark">{t("map-style-dark")}</option>
             <option value="outdoors">{t("map-style-outdoors")}</option>
-            <option value="navigation-day">{t("map-style-navigation-day")}</option>
-            <option value="navigation-night">{t("map-style-navigation-night")}</option>
-            <option value="standard-satellite">{t("map-style-standard-satellite")}</option>
+            <option value="navigation-day">
+              {t("map-style-navigation-day")}
+            </option>
+            <option value="navigation-night">
+              {t("map-style-navigation-night")}
+            </option>
+            <option value="standard-satellite">
+              {t("map-style-standard-satellite")}
+            </option>
             <option value="none">{t("map-style-none")}</option>
           </select>
         </div>
@@ -193,12 +201,12 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
           <button
             onClick={() => setShowStatistics(!showStatistics)}
             className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-              showStatistics ? 'bg-blue-600' : 'bg-gray-200'
+              showStatistics ? "bg-blue-600" : "bg-gray-200"
             }`}
           >
             <span
               className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition duration-200 ease-in-out ${
-                showStatistics ? 'translate-x-5' : 'translate-x-0'
+                showStatistics ? "translate-x-5" : "translate-x-0"
               }`}
             />
           </button>
@@ -206,33 +214,45 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
 
         {showStatistics && statistics && (
           <div className="mt-4 p-4 bg-white rounded-lg border border-gray-200">
-            <h3 className="text-sm font-medium text-gray-900 mb-3">{t("statistics")}</h3>
-            
+            <h3 className="text-sm font-medium text-gray-900 mb-3">
+              {t("statistics")}
+            </h3>
+
             <div className="grid grid-cols-2 gap-3 text-sm">
               <div className="flex justify-between">
                 <span className="text-gray-600">{t("total-tiles")}:</span>
-                <span className="font-medium">{statistics.totalTiles.toLocaleString()}</span>
+                <span className="font-medium">
+                  {statistics.totalTiles.toLocaleString()}
+                </span>
               </div>
-              
+
               <div className="flex justify-between">
                 <span className="text-gray-600">{t("total-blocks")}:</span>
-                <span className="font-medium">{statistics.totalBlocks.toLocaleString()}</span>
+                <span className="font-medium">
+                  {statistics.totalBlocks.toLocaleString()}
+                </span>
               </div>
-              
+
               <div className="flex justify-between">
                 <span className="text-gray-600">{t("visited-pixels")}:</span>
-                <span className="font-medium">{statistics.totalVisitedPixels.toLocaleString()}</span>
+                <span className="font-medium">
+                  {statistics.totalVisitedPixels.toLocaleString()}
+                </span>
               </div>
-              
+
               <div className="flex justify-between">
                 <span className="text-gray-600">{t("coverage-area")}:</span>
-                <span className="font-medium">{statistics.coverageArea} km²</span>
+                <span className="font-medium">
+                  {statistics.coverageArea} km²
+                </span>
               </div>
             </div>
 
             {statistics.bounds && (
               <div className="mt-3 pt-3 border-t border-gray-100">
-                <div className="text-xs text-gray-500 mb-2">{t("map-bounds")}:</div>
+                <div className="text-xs text-gray-500 mb-2">
+                  {t("map-bounds")}:
+                </div>
                 <div className="grid grid-cols-2 gap-2 text-xs">
                   <div>N: {statistics.bounds.north.toFixed(4)}°</div>
                   <div>S: {statistics.bounds.south.toFixed(4)}°</div>
@@ -244,10 +264,13 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
 
             {statistics.regions.length > 0 && (
               <div className="mt-3 pt-3 border-t border-gray-100">
-                <div className="text-xs text-gray-500 mb-2">{t("regions-visited")}:</div>
+                <div className="text-xs text-gray-500 mb-2">
+                  {t("regions-visited")}:
+                </div>
                 <div className="text-xs text-gray-700">
-                  {statistics.regions.slice(0, 3).join(', ')}
-                  {statistics.regions.length > 3 && ` (+${statistics.regions.length - 3} más)`}
+                  {statistics.regions.slice(0, 3).join(", ")}
+                  {statistics.regions.length > 3 &&
+                    ` (+${statistics.regions.length - 3} más)`}
                 </div>
               </div>
             )}
@@ -260,12 +283,12 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
           <button
             onClick={() => setAutoSave(!autoSave)}
             className={`relative inline-flex h-6 w-11 flex-shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 ${
-              autoSave ? 'bg-blue-600' : 'bg-gray-200'
+              autoSave ? "bg-blue-600" : "bg-gray-200"
             }`}
           >
             <span
               className={`pointer-events-none inline-block h-5 w-5 rounded-full bg-white shadow transform ring-0 transition duration-200 ease-in-out ${
-                autoSave ? 'translate-x-5' : 'translate-x-0'
+                autoSave ? "translate-x-5" : "translate-x-0"
               }`}
             />
           </button>
@@ -274,7 +297,9 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
         {/* Monitor d'ús de Mapbox */}
         <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
           <div className="flex items-center justify-between mb-2">
-            <span className="text-sm font-medium text-blue-900">{t("mapbox-usage")}</span>
+            <span className="text-sm font-medium text-blue-900">
+              {t("mapbox-usage")}
+            </span>
             <span className="text-xs text-blue-600">FREE TIER</span>
           </div>
           <div className="text-xs text-blue-700 space-y-1">
@@ -285,11 +310,15 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
             <div className="flex justify-between">
               <span>{t("current-usage")}:</span>
               <span className="font-medium text-green-600">
-                {localStorage.getItem('mapbox-usage-count') || '0'} {t("map-loads")}
+                {localStorage.getItem("mapbox-usage-count") || "0"}{" "}
+                {t("map-loads")}
               </span>
             </div>
             <div className="w-full bg-blue-200 rounded-full h-2 mt-2">
-              <div className="bg-green-500 h-2 rounded-full" style={{width: '3.6%'}}></div>
+              <div
+                className="bg-green-500 h-2 rounded-full"
+                style={{ width: "3.6%" }}
+              ></div>
             </div>
             <div className="text-center text-xs text-blue-600 mt-1">
               ✅ {t("well-within-free-limits")}
@@ -299,7 +328,9 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
 
         {/* Consells per estalviar */}
         <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
-          <div className="text-sm font-medium text-green-900 mb-2">💡 {t("cost-saving-tips")}</div>
+          <div className="text-sm font-medium text-green-900 mb-2">
+            💡 {t("cost-saving-tips")}
+          </div>
           <div className="text-xs text-green-700 space-y-1">
             <div>• {t("tip-reload-sparingly")}</div>
             <div>• {t("tip-choose-style-once")}</div>
