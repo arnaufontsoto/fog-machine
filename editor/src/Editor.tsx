@@ -153,14 +153,13 @@ function Editor(props: Props): JSX.Element {
   const [showStyleSelector, setShowStyleSelector] = useState(false);
 
   const mapStyles = [
-    { key: "standard", name: "Standard 3D", preview: "🌍" },
-    { key: "satellite", name: "Satellite", preview: "🛰️" },
-    { key: "hybrid", name: "Satellite Streets", preview: "🗺️" },
     { key: "light", name: "Light", preview: "☀️" },
     { key: "dark", name: "Dark", preview: "🌙" },
+    { key: "satellite", name: "Satellite", preview: "🛰️" },
+    { key: "hybrid", name: "Satellite Streets", preview: "🗺️" },
     { key: "outdoors", name: "Outdoors", preview: "🏔️" },
-    { key: "navigation-day", name: "Navigation Day", preview: "🧭" },
-    { key: "navigation-night", name: "Navigation Night", preview: "🌌" },
+    { key: "standard", name: "Streets", preview: "🌍" },
+    { key: "none", name: "No Map", preview: "⚫" },
   ];
 
   // Añadir después del estado showStyleSelector
@@ -202,9 +201,6 @@ function Editor(props: Props): JSX.Element {
         | "light"
         | "dark"
         | "outdoors"
-        | "navigation-day"
-        | "navigation-night"
-        | "standard-satellite"
     );
     setShowStyleSelector(false);
   };

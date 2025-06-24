@@ -13,10 +13,7 @@ type MapStyle =
   | "none"
   | "light"
   | "dark"
-  | "outdoors"
-  | "navigation-day"
-  | "navigation-night"
-  | "standard-satellite";
+  | "outdoors";
 type MapProjection = "globe" | "mercator";
 type FogConcentration = "low" | "medium" | "high";
 
@@ -50,7 +47,7 @@ export class MapController {
     this.eraserArea = null;
     this.historyManager = new HistoryManager(this.fogMap);
     this.onChangeCallback = {};
-    this.mapStyle = "standard";
+    this.mapStyle = "light"; // Changed to compatible style for v2
     this.mapProjection = "mercator";
     this.resolvedLanguage = "en";
     this.fogConcentration = "medium";
@@ -89,7 +86,7 @@ export class MapController {
   mapboxStyleURL(): string {
     switch (this.mapStyle) {
       case "standard":
-        return "mapbox://styles/mapbox/standard";
+        return "mapbox://styles/mapbox/streets-v12";
       case "satellite":
         return "mapbox://styles/mapbox/satellite-v9";
       case "hybrid":
@@ -100,12 +97,6 @@ export class MapController {
         return "mapbox://styles/mapbox/dark-v11";
       case "outdoors":
         return "mapbox://styles/mapbox/outdoors-v12";
-      case "navigation-day":
-        return "mapbox://styles/mapbox/navigation-day-v1";
-      case "navigation-night":
-        return "mapbox://styles/mapbox/navigation-night-v1";
-      case "standard-satellite":
-        return "mapbox://styles/mapbox/standard-satellite";
       case "none":
         return "mapbox://styles/mapbox/streets-v12";
       default:

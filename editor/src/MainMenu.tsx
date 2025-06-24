@@ -189,28 +189,16 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
                   | "light"
                   | "dark"
                   | "outdoors"
-                  | "navigation-day"
-                  | "navigation-night"
-                  | "standard-satellite"
               )
             }
             className="w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 text-sm"
           >
-            <option value="standard">{t("map-style-standard")}</option>
-            <option value="satellite">{t("map-style-satellite")}</option>
-            <option value="hybrid">{t("map-style-hybrid")}</option>
             <option value="light">{t("map-style-light")}</option>
             <option value="dark">{t("map-style-dark")}</option>
+            <option value="satellite">{t("map-style-satellite")}</option>
+            <option value="hybrid">{t("map-style-hybrid")}</option>
             <option value="outdoors">{t("map-style-outdoors")}</option>
-            <option value="navigation-day">
-              {t("map-style-navigation-day")}
-            </option>
-            <option value="navigation-night">
-              {t("map-style-navigation-night")}
-            </option>
-            <option value="standard-satellite">
-              {t("map-style-standard-satellite")}
-            </option>
+            <option value="standard">{t("map-style-standard")}</option>
             <option value="none">{t("map-style-none")}</option>
           </select>
         </div>
