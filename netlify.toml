@@ -1,3 +1,7 @@
+[build]
+  command = "./build-frontend.sh"
+  publish = "build/frontend"
+
 [[redirects]]
   from = "editor/*"
   to = "editor/:splat"
