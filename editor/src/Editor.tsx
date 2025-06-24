@@ -151,6 +151,40 @@ function Editor(props: Props): JSX.Element {
     { key: "navigation-night", name: "Navigation Night", preview: "🌌" },
   ];
 
+  // Añadir después del estado showStyleSelector
+  const [usageCount, setUsageCount] = useState(() => {
+    const saved = localStorage.getItem('mapbox-usage-count');
+    return saved ? parseInt(saved) : 0;
+  });
+
+  // Añadir useEffect para trackear el uso
+  useEffect(() => {
+    // Incrementar contador al inicializar
+    const newCount = usageCount + 1;
+    setUsageCount(newCount);
+    localStorage.setItem('mapbox-usage-count', newCount.toString());
+    
+    // Reset contador cada mes
+    const lastReset = localStorage.getItem('usage-reset-date');
+    const now = new Date();
+    const thisMonth = `${now.getFullYear()}-${now.getMonth()}`;
+    
+    if (lastReset !== thisMonth) {
+      setUsageCount(1);
+      localStorage.setItem('mapbox-usage-count', '1');
+      localStorage.setItem('usage-reset-date', thisMonth);
+    }
+  }, []);
+
+    // Función para trackear cambios de estilo
+  const handleStyleChange = (styleKey: string) => {
+    const newCount = usageCount + 1;
+    setUsageCount(newCount);
+    localStorage.setItem('mapbox-usage-count', newCount.toString());
+    mapController.setMapStyle(styleKey as any);
+    setShowStyleSelector(false);
+  };
+
   return (
     <>
       <MainMenu
@@ -197,6 +231,25 @@ function Editor(props: Props): JSX.Element {
         )}
       </div>
 
+      {/* Alerta de límit d'ús */}
+      {usageCount > 40000 && (
+        <div className="absolute top-16 left-4 right-4 z-30">
+          <div className="bg-yellow-100 border border-yellow-400 text-yellow-800 px-4 py-3 rounded-lg shadow-lg">
+            <div className="flex items-center">
+              <span className="text-lg mr-2">⚠️</span>
+              <div>
+                <div className="font-medium">
+                  {t("usage-warning")}
+                </div>
+                <div className="text-sm">
+                  {usageCount.toLocaleString()}/50,000 {t("map-loads")} - {t("consider-reducing-usage")}
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Selector rápido de estilos de mapa */}
       <div className="absolute top-4 right-20 z-20">
         <div className="relative">
@@ -224,10 +277,7 @@ function Editor(props: Props): JSX.Element {
                   {mapStyles.map((style) => (
                     <button
                       key={style.key}
-                      onClick={() => {
-                        mapController.setMapStyle(style.key as any);
-                        setShowStyleSelector(false);
-                      }}
+                                             onClick={() => handleStyleChange(style.key)}
                       className={`p-3 rounded-lg text-left transition-all duration-200 hover:bg-blue-50 border ${
                         mapController.getMapStyle() === style.key
                           ? 'bg-blue-100 border-blue-300 text-blue-700'

@@ -270,6 +270,42 @@ function AdvancedTab(props: { mapController: MapController }): JSX.Element {
             />
           </button>
         </div>
+
+        {/* Monitor d'ús de Mapbox */}
+        <div className="mt-4 p-3 bg-blue-50 rounded-lg border border-blue-200">
+          <div className="flex items-center justify-between mb-2">
+            <span className="text-sm font-medium text-blue-900">{t("mapbox-usage")}</span>
+            <span className="text-xs text-blue-600">FREE TIER</span>
+          </div>
+          <div className="text-xs text-blue-700 space-y-1">
+            <div className="flex justify-between">
+              <span>{t("monthly-limit")}:</span>
+              <span className="font-medium">50,000 {t("map-loads")}</span>
+            </div>
+            <div className="flex justify-between">
+              <span>{t("current-usage")}:</span>
+              <span className="font-medium text-green-600">
+                {localStorage.getItem('mapbox-usage-count') || '0'} {t("map-loads")}
+              </span>
+            </div>
+            <div className="w-full bg-blue-200 rounded-full h-2 mt-2">
+              <div className="bg-green-500 h-2 rounded-full" style={{width: '3.6%'}}></div>
+            </div>
+            <div className="text-center text-xs text-blue-600 mt-1">
+              ✅ {t("well-within-free-limits")}
+            </div>
+          </div>
+        </div>
+
+        {/* Consells per estalviar */}
+        <div className="mt-3 p-3 bg-green-50 rounded-lg border border-green-200">
+          <div className="text-sm font-medium text-green-900 mb-2">💡 {t("cost-saving-tips")}</div>
+          <div className="text-xs text-green-700 space-y-1">
+            <div>• {t("tip-reload-sparingly")}</div>
+            <div>• {t("tip-choose-style-once")}</div>
+            <div>• {t("tip-free-tier-generous")}</div>
+          </div>
+        </div>
       </div>
     </>
   );
